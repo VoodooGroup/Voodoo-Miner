@@ -1,0 +1,510 @@
+/* Voodoo Miner — full styles (fixed background path + dual wallet) */
+:root {
+  --bg: #0a0a0b;
+  --card: rgba(17, 17, 20, 0.78);
+  --text: #e9e9ea;
+  --text-dim: #9ca3af;
+  --accent: #ffffff;
+  --warn: #ffffff;
+  --danger: #ef4444;
+  --border: rgba(255, 255, 255, 0.12);
+  --cyan: #1d4ed8;
+  --success: #10b981;
+  --modal-bg: rgba(0, 0, 0, 0.75);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+/* Background: path is relative to THIS css file (css/) → go up one level */
+body {
+  font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  padding: 16px;
+  background-color: var(--bg);
+  background-image: url("../voodoo-token-background-3.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Dual wallet buttons */
+.wallet-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wallet-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 10.5rem;
+  height: 2.5rem;
+  padding: 0 0.85rem;
+  border: none;
+  border-radius: 999px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.wallet-btn:disabled {
+  opacity: 0.85;
+  cursor: default;
+}
+
+.wallet-btn-voodoo {
+  background: #073749;
+}
+.wallet-btn-voodoo:hover:not(:disabled) {
+  background: #0a4a61;
+}
+
+.wallet-btn-other {
+  background: #1e40af;
+}
+.wallet-btn-other:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.wallet-btn.is-connected {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+#rainbowkit-root {
+  position: fixed;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  z-index: 2147483000;
+  pointer-events: none;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.title-img {
+  height: 36px;
+  width: auto;
+}
+
+h1 {
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin: 0 0 16px;
+  color: var(--text-dim);
+}
+
+h3 {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.status {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 0;
+  font-weight: 500;
+  min-height: 1.5em;
+  backdrop-filter: blur(8px);
+}
+
+.status.success {
+  color: var(--success);
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--success);
+}
+
+.status.error {
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.12);
+  border-color: var(--danger);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 720px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+label {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  background: #17171a;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.input-row input {
+  flex: 1;
+}
+
+.input-row button {
+  padding: 12px 24px;
+  background: var(--warn);
+  color: black;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  min-width: 110px;
+}
+
+button.action {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  transition: opacity 0.15s;
+  margin-top: 12px;
+}
+
+.btn-approve {
+  background: var(--warn);
+  color: black;
+}
+
+.btn-mine {
+  background: var(--accent);
+  color: black;
+}
+
+.btn-stop-mining {
+  background: white;
+  color: black;
+}
+
+.btn-claim {
+  background: white;
+  color: black;
+}
+
+button.action:disabled,
+button.action:not(.enabled) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.action.enabled {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.info-box {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+
+.info-box strong {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+.link {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  main {
+    padding: 0 4px;
+  }
+  .card {
+    padding: 18px;
+  }
+  .logo-img,
+  .title-img {
+    height: 32px;
+  }
+  .wallet-btn {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+/* Confirm modal */
+#modalOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--modal-bg);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+#confirmModal {
+  background: #111114;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 440px;
+  padding: 32px 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+  color: var(--text);
+  text-align: center;
+}
+
+#confirmModal h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: var(--accent);
+}
+
+#confirmModal p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 28px;
+  color: var(--text-dim);
+  white-space: pre-line;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.modal-btn {
+  padding: 14px 32px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+  min-width: 140px;
+}
+
+#confirmYes {
+  background: var(--success);
+  color: black;
+}
+
+#confirmYes:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+#confirmNo {
+  background: var(--danger);
+  color: white;
+}
+
+#confirmNo:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ui.js modals */
+body.voodoo-ui-open {
+  overflow: hidden;
+}
+
+.voodoo-ui-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.voodoo-ui-modal.hidden {
+  display: none !important;
+}
+
+.voodoo-ui-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.voodoo-ui-panel {
+  position: relative;
+  background: #fff;
+  color: #111;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.voodoo-ui-title {
+  margin: 0 0 0.5rem;
+}
+
+.voodoo-ui-message {
+  margin: 0 0 1rem;
+  color: #374151;
+  white-space: pre-wrap;
+}
+
+.voodoo-ui-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.voodoo-ui-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.voodoo-ui-btn-primary {
+  background: #1e40af;
+  color: #fff;
+}
+
+.voodoo-ui-btn-secondary {
+  background: #e5e7eb;
+  color: #111;
+  text-decoration: none;
+  display: inline-flex;
+}
+
+.voodoo-ui-btn-ghost {
+  background: transparent;
+  color: #4b5563;
+}
+
+.voodoo-ui-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 0.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: #e5e7eb;
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voodoo Miner • Pool VDO+PLS</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <!-- Background also set on body so it never depends only on CSS relative path -->
+  <link rel="stylesheet" href="css/miner.css?v=3">
+  <link rel="stylesheet" href="js/rainbow-bridge.css">
+  <style>
+    body {
+      background-color: #0a0a0b;
+      background-image: url("voodoo-token-background-3.png");
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <div class="logo">Voodoo Miner</div>
+      <img src="Voodoo-Token-Logo.png" alt="Voodoo Token" class="logo-img" onerror="this.style.display='none'">
+    </div>
+    <div class="wallet-actions">
+      <button type="button" id="voodooWalletBtn" class="wallet-btn wallet-btn-voodoo" title="Voodoo Wallet extension">Voodoo Wallet</button>
+      <button type="button" id="connectBtn" class="wallet-btn wallet-btn-other" title="MetaMask, WalletConnect, …">Other</button>
+    </div>
+  </header>
+  <div id="rainbowkit-root"></div>
+
+  <main id="main">
+    <div class="status" id="status">Connect your wallet to start mining</div>
+
+    <div class="card">
+      <h2>Pool Overview</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 20px;">
+        <div>
+          <h3 style="text-align: center; margin-bottom: 12px;">Current APY</h3>
+          <div class="info-grid">
+            <div class="info-box"><strong id="apyV1">…</strong><div>PulseX V1</div></div>
+            <div class="info-box"><strong id="apyV2">…</strong><div>PulseX V2</div></div>
+          </div>
+        </div>
+        <div>
+          <h3 style="text-align: center; margin-bottom: 12px;">Pool Stats</h3>
+          <div class="info-grid">
+            <div class="info-box"><strong id="lockedCoins">—</strong><div>Locked VDO</div></div>
+            <div class="info-box"><strong id="activeMiners">—</strong><div>Active Miners</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title-container">
+        <h1>Pair VDO + PLS</h1>
+        <img src="https://voodootoken.com/wp-content/uploads/2026/01/voodoo-pulsechain.png" alt="PulseChain" class="title-img">
+      </div>
+      <p style="color:var(--text-dim); margin-bottom:20px;">Earn ~<span id="apyText">14</span>% APY • Provide balanced liquidity</p>
+      <div class="grid-2">
+        <div>
+          <label>Pool</label>
+          <select id="poolSelect" onchange="updateMineButtons(); calculateOptimalPLS();">
+            <option value="0">PulseX V1</option>
+            <option value="1">PulseX V2</option>
+          </select>
+        </div>
+        <div>
+          <label>Slippage (%)</label>
+          <input type="number" id="slippagePct" value="49" min="30" max="100" step="1">
+        </div>
+      </div>
+      <div style="margin:20px 0">
+        <label>VDO Amount</label>
+        <div class="input-row">
+          <input type="number" id="amountVDO" placeholder="e.g. 100" step="any" oninput="debouncedCalculate()">
+          <button type="button" onclick="fillMaxVDO()">Max</button>
+        </div>
+      </div>
+      <div>
+        <label>PLS Amount (auto-filled)</label>
+        <input type="number" id="amountPLS" placeholder="Calculated automatically" step="any" readonly>
+      </div>
+      <button type="button" class="action btn-approve" id="approveBtn" onclick="approveVDO()" disabled>Approve VDO</button>
+      <button type="button" class="action btn-mine" id="mineBtn" onclick="mine()" disabled>Mine Now</button>
+    </div>
+
+    <div class="card">
+      <h2>Stop Mining &amp; Claim</h2>
+      <div>
+        <label>Pool</label>
+        <select id="stopMiningPool" onchange="updateStopButtons();">
+          <option value="0">PulseX V1</option>
+          <option value="1">PulseX V2</option>
+        </select>
+      </div>
+      <div style="margin:16px 0">
+        <label>LP Tokens to Stop Mining</label>
+        <div class="input-row">
+          <input type="number" id="stopMiningAmount" placeholder="0.0" step="any">
+          <button type="button" onclick="fillMaxLPForStop()">Max</button>
+        </div>
+      </div>
+      <button type="button" class="action btn-stop-mining" id="stopMiningBtn" onclick="showCustomConfirm(true)" disabled>Stop Mining + Claim</button>
+      <button type="button" class="action btn-claim" id="claimBtn" onclick="showCustomConfirm(false)" disabled>Claim Rewards Only</button>
+    </div>
+
+    <div class="card">
+      <h2>About Voodoo Miner</h2>
+      <p style="color:var(--text-dim); line-height:1.6;">
+        The Voodoo Liquidity Miner lets you earn VDO by providing VDO+PLS liquidity on PulseX.
+        Rewards accrue at about <span id="aboutApy">14</span>% APY. Claim anytime; unstake LP to exit with rewards.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Your Wallet</h2>
+      <div class="info-grid">
+        <div class="info-box"><strong id="addressShort">---</strong><div>Address</div></div>
+        <div class="info-box"><strong id="vdoBalance">0</strong><div>VDO</div></div>
+        <div class="info-box"><strong id="plsBalance">0</strong><div>PLS</div></div>
+      </div>
+      <div style="margin-top:20px">
+        <strong>Pending Rewards</strong><br><br>
+        <div style="color:var(--accent); font-size:1.1rem;">
+          <span id="pending0">0 VDO (V1)</span> • <span id="pending1">0 VDO (V2)</span>
+        </div>
+      </div>
+      <div style="margin-top:20px; font-size:0.95rem;">
+        <a id="contractLink" href="https://otter.pulsechain.com/address/0xCc5AD08eB08cC946668900176f9eF66341F375c5" target="_blank" rel="noopener noreferrer" class="link">View Contract on OtterScan</a>
+      </div>
+    </div>
+  </main>
+
+  <div id="modalOverlay">
+    <div id="confirmModal">
+      <h3>Confirm Transaction</h3>
+      <p id="modalMessage"></p>
+      <div class="modal-buttons">
+        <button type="button" class="modal-btn" id="confirmYes" onclick="handleConfirmYes()">Yes, Proceed</button>
+        <button type="button" class="modal-btn" id="confirmNo" onclick="closeModal()">No, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js?v=4"></script>
+  <script src="js/ui.js?v=4"></script>
+  <script src="js/contracts.js?v=4"></script>
+  <script src="js/wallet.js?v=4"></script>
+  <script src="js/app.js?v=5"></script>
+  <script src="js/rainbow-bridge.js?v=4" defer></script>
+  <script>
+    // Quick diagnostics in console
+    window.addEventListener('load', function () {
+      console.info('[VoodooMiner] ethers=', typeof ethers);
+      console.info('[VoodooMiner] VoodooWallet=', !!window.VoodooWallet);
+      console.info('[VoodooMiner] VoodooConfig=', !!window.VoodooConfig);
+      setTimeout(function () {
+        console.info('[VoodooMiner] VoodooRainbow ready=', !!(window.VoodooRainbow && window.VoodooRainbow.ready));
+      }, 2500);
+    });
+  </script>
+</body>
+</html>
